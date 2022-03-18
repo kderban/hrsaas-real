@@ -11,7 +11,10 @@
 
       <div class="title-container">
         <h3 class="title">
-          <img src="@/assets/common/login-logo.png" alt="">
+          <img
+            src="@/assets/common/login-logo.png"
+            alt=""
+          >
         </h3>
       </div>
 
@@ -45,7 +48,10 @@
           auto-complete="on"
           @keyup.enter.native="handleLogin"
         />
-        <span class="show-pwd" @click="showPwd">
+        <span
+          class="show-pwd"
+          @click="showPwd"
+        >
           <svg-icon
             :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
           />
@@ -71,6 +77,8 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
+
+import { mapActions } from 'vuex'
 
 export default {
   name: 'Login',
@@ -113,6 +121,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['user/login']),
     showPwd () {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -124,18 +133,25 @@ export default {
       })
     },
     handleLogin () {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+      // ref可以获取到一个元素的dom对象
+      // ref作用到组件上的时候，可以获取该组件的实例 this
+      // 表单的手动校验   isOk是否校验通过
+      this.$refs.loginForm.validate(async isOk => {
+        if (isOk) {
+          try {
+            this.loading = true
+            // 只有校验通过了，我们才去调用action
+            await this['user/login'](this.loginForm)
+            // 应该在登录成功之后
+            // async 标记的函数实际上是Promise对象
+            // await 下面的代码都是成功执行的代码
+            this.$router.push('/')
+          } catch (error) {
+            console.log(error)
+          } finally {
+            // 无论执行try还是catch 都关闭转圈
             this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+          }
         }
       })
     }
