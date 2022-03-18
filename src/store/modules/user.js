@@ -18,12 +18,8 @@ const mutations = {
 // 执行异步
 const actions = {
   async login (context, data) {
-    const result = await login(data)
-    // axios默认给数据加了一层data
-    if (result.data.success) {
-      // true 表示登录接口调用成功 也就是意味着你的用户名和密码是正确的
-      context.commit('setToken', result.data.data)
-    }
+    const result = await login(data) // 拿到token
+    context.commit('setToken', result) // 设置token
   }
 }
 
