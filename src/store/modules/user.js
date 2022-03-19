@@ -1,5 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, getUserDetailById } from '@/api/user'
 // 状态
 const state = {
   token: getToken(), // 设置token为共享状态。初始化vuex的时候，就先从缓存中读取
@@ -31,7 +31,9 @@ const actions = {
   },
   async getUserInfo (context) {
     const result = await getUserInfo() // 获取返回值
-    context.commit('setUserInfo', result) // 提交到mutations
+    // 获取用户的详情   用户的详情数据
+    const baseInfo = await getUserDetailById(result.userId)
+    context.commit('setUserInfo', { ...result, ...baseInfo }) // 提交到mutations
     return result // 这里给后期做权限的时候，留下的伏笔
   }
 }
