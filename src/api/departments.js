@@ -26,3 +26,16 @@ export function delDepartments (id) {
     // 同样的地址 不同的方法 执行不同的业务
   })
 }
+
+/**
+ *  新增部门接口
+ *
+ * ****/
+export function addDepartments (data) {
+  return request({
+    url: '/company/department',
+    method: 'post',
+    data
+  })
+}
+
