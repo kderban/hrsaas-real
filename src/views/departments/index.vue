@@ -33,7 +33,7 @@
       </el-card>
     </div>
     <!-- 放置新增弹层组件  -->
-    <add-dept :show-dialog="showDialog" />
+    <add-dept :show-dialog="showDialog" :tree-node="node"/>
   </div>
 </template>
 
@@ -67,7 +67,7 @@ export default {
   methods: {
     async getDepartments () {
       const result = await getDepartments()
-      this.company = { name: result.companyName, manager: '负责人' }
+      this.company = { name: result.companyName, manager: '负责人', id: '' }
       // 这里定义一个空串  因为 它是根 所有的子节点的数据pid 都是 ""
       this.departs = tranListToTreeData(result.depts, '')
       console.log(result)
