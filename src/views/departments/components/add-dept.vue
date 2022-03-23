@@ -3,10 +3,12 @@
   <el-dialog
     title="新增部门"
     :visible="showDialog"
+    @close="btnCancel"
   >
     <!-- 表单组件  el-form   label-width设置label的宽度   -->
     <!-- 匿名插槽 -->
     <el-form
+      ref="deptForm"
       :model="formData"
       :rules="rules"
       label-width="120px"
@@ -42,8 +44,13 @@
           placeholder="请选择"
           @focus="getEmployeeSimple"
         >
-        <!-- 遍历选项 -->
-        <el-option v-for="item in people" :key="item.id" :label="item.username" :value="item.username" ></el-option>
+          <!-- 遍历选项 -->
+          <el-option
+            v-for="item in people"
+            :key="item.id"
+            :label="item.username"
+            :value="item.username"
+          />
         </el-select>
       </el-form-item>
       <el-form-item
@@ -70,15 +77,19 @@
         <el-button
           type="primary"
           size="small"
+          @click="btnOK"
         >确定</el-button>
-        <el-button size="small">取消</el-button>
+        <el-button
+          size="small"
+          @click="btnCancel"
+        >取消</el-button>
       </el-col>
     </el-row>
   </el-dialog>
 </template>
 
 <script>
-import { getDepartments } from '@/api/departments'
+import { getDepartments, addDepartments } from '@/api/departments'
 
 import { getEmployeeSimple } from '@/api/employees'
 export default {
@@ -140,6 +151,27 @@ export default {
   methods: {
     async getEmployeeSimple () {
       this.people = await getEmployeeSimple()
+    },
+    btnOK () {
+      // 手动校验表单
+      // 首先获取refs  (el-form)的实例
+      this.$refs.deptForm.validate(async isOK => {
+        if (isOK) {
+          // 表单校验通过
+          // 这里将id设置成pid
+          await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          // 告诉父组件
+          this.$emit('addDepts') // 触发一个自定义事件
+          // 此刻应该去修改 showDialog的值
+          // 子组件 update:固定写法 (update:props名称, 值)
+          this.$emit('update:showDialog', false) // 触发事件
+          // 关闭dialog的时候 会触发el-dialog的 close事件，所以这里不需要再单独重置数据了
+        }
+      })
+    },
+    btnCancel () {
+      this.$refs.deptForm.resetFields() // resetFields方法，重置校验字段并还原数据
+      this.$emit('update:showDialog', false) // 关闭弹层
     }
   }
 }
