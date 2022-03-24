@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { getDepartments, addDepartments, getDepartDetail } from '@/api/departments'
+import { getDepartments, addDepartments, getDepartDetail, updateDepartments } from '@/api/departments'
 
 import { getEmployeeSimple } from '@/api/employees'
 export default {
@@ -110,19 +110,40 @@ export default {
       // value 是部门名称，要和同一级部门下的部门去比较，有没有相同的，相同的不可以过，不相同可以过
       // 先要获取最新的组织架构数据
       const { depts } = await getDepartments()
+      let isRepeat = false
       // 去找同级部门下 有没有和value相同的数据
-      // 找到同级部门的所有的子部门     depts.filter(item => item.pid === this.treeNode.id)
-      // 在同级部门的子部门中看有没有和我的名字一样的     some(item => item.name === value) 相同的不可以过，不相同可以过
-      // 如果 isRepeat 为true，表示找到了一样的名字
-      const isRepeat = depts.filter(item => item.pid === this.treeNode.id).some(item => item.name === value)
+      if (this.formData.id) {
+        // 有id,编辑模式
+        // 编辑的数据在数据库里有，并且同级部门下，我的名字和同级部门下的其他名字不能一样
+        // 首先找到我的同级部门     this.formData.id就是我当前的id， 我的pid是this.formData.pid
+        //  depts.filter(item => item.pid === this.treeNode.pid 同级部门下除了我以外的所有的部门,这些人里面把我自己排除  && item.id !== this.treeNode.id)
+        // 在上面的基础之上去找名字有没有和我一样的
+        isRepeat = depts.filter(item => item.pid === this.treeNode.pid && item.id !== this.treeNode.id).some(item => item.name === value)
+      } else {
+        // 没有id,新增模式
+
+        // 找到同级部门的所有的子部门     depts.filter(item => item.pid === this.treeNode.id)
+        // 在同级部门的子部门中看有没有和我的名字一样的     some(item => item.name === value) 相同的不可以过，不相同可以过
+        // 如果 isRepeat 为true，表示找到了一样的名字
+        isRepeat = depts.filter(item => item.pid === this.treeNode.id).some(item => item.name === value)
+      }
       isRepeat ? callback(new Error(`同级部门下已经有${value}的部门了`)) : callback()
     }
     const checkCodeRepeat = async (rule, value, callback) => {
       // 先要获取最新的组织架构数据
       const { depts } = await getDepartments()
-      // 要求编码和所有部门编码都不能重复
-      // 由于历史数据有可能没有 code，所以这里要添加一个强制性条件 就是value值不为空
-      const isRepeat = depts.some(item => item.code === value && value)
+      let isRepeat = false
+      if (this.formData.id) {
+        // 编辑模式
+        // 要求是不能有一样的code
+        isRepeat = depts.filter(item => item.id !== this.treeNode.id).some(item => item.code === value && value)
+      } else {
+        // 新增模式
+
+        // 要求编码和所有部门编码都不能重复
+        // 由于历史数据有可能没有 code，所以这里要添加一个强制性条件 就是value值不为空
+        isRepeat = depts.some(item => item.code === value && value)
+      }
       isRepeat ? callback(new Error(`组织架构下已经存在这个${value}编码了`)) : callback()
     }
     return {
@@ -169,9 +190,15 @@ export default {
       // 首先获取refs  (el-form)的实例
       this.$refs.deptForm.validate(async isOK => {
         if (isOK) {
-          // 表单校验通过
-          // 这里将id设置成pid
-          await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          // 要分清楚现在是编辑还是新增
+          if (this.formData.id) {
+            // 编辑模式 调用编辑接口
+            await updateDepartments(this.formData)
+          } else {
+            // 表单校验通过
+            // 这里将id设置成pid
+            await addDepartments({ ...this.formData, pid: this.treeNode.id })
+          }
           // 告诉父组件
           this.$emit('addDepts') // 触发一个自定义事件
           // 此刻应该去修改 showDialog的值
