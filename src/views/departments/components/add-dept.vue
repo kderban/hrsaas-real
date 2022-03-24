@@ -1,7 +1,7 @@
 <template>
   <!-- 新增部门的弹层 -->
   <el-dialog
-    title="新增部门"
+    :title="showTitle"
     :visible="showDialog"
     @close="btnCancel"
   >
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { getDepartments, addDepartments } from '@/api/departments'
+import { getDepartments, addDepartments, getDepartDetail } from '@/api/departments'
 
 import { getEmployeeSimple } from '@/api/employees'
 export default {
@@ -148,9 +148,21 @@ export default {
       people: []
     }
   },
+  computed: {
+    showTitle () {
+      return this.formData.id ? '编辑部门' : '新增子部门'
+    }
+  },
   methods: {
     async getEmployeeSimple () {
       this.people = await getEmployeeSimple()
+    },
+    // 在add-dept.vue中定义getDepartDetail方法
+    // 获取部门详情
+    async getDepartDetail (id) {
+      // 因为这是父组件调用子组件的方法，先设置了node数据，直接调用方法。
+      // props传值是异步的，this.tree.node有可能取到值也有可能取不到。
+      this.formData = await getDepartDetail(id)
     },
     btnOK () {
       // 手动校验表单
@@ -170,6 +182,14 @@ export default {
       })
     },
     btnCancel () {
+      // 重置数据  因为resetFields 只能重置 表单上的数据, 非表单上的 比如 编辑中id 不能重置
+      this.formData = {
+        name: '',
+        code: '',
+        manager: '',
+        introduce: ''
+      }
+      // 清除之前的校验  可以重置数据 只能重置 定义在data中的数据
       this.$refs.deptForm.resetFields() // resetFields方法，重置校验字段并还原数据
       this.$emit('update:showDialog', false) // 关闭弹层
     }
