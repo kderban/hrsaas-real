@@ -11,6 +11,7 @@
                 icon="el-icon-plus"
                 size="small"
                 type="primary"
+                @click="showDialog = true"
               >新增角色</el-button>
             </el-row>
             <!-- 给表格绑定数据 -->
@@ -133,8 +134,9 @@
     </div>
     <!-- 放置一个弹层组件 -->
     <el-dialog
-      title="编辑部门"
+      :title="showTitle"
       :visible="showDialog"
+      @close="btnCancel"
     >
       <el-form
         ref="roleForm"
@@ -174,7 +176,7 @@
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole } from '@/api/setting'
+import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/setting'
 
 import { mapGetters } from 'vuex'
 
@@ -202,7 +204,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['companyId'])
+    ...mapGetters(['companyId']),
+    // 角色修改/添加
+    showTitle () {
+      return this.roleForm.id ? '编辑角色' : '新增角色'
+    }
   },
   created () {
     this.getRoleList() // 获取角色列表
@@ -248,17 +254,24 @@ export default {
           await updateRole(this.roleForm)
         } else {
           // 新增业务
+          await addRole(this.roleForm)
         }
         // 重新拉取数据
         this.getRoleList()
         this.$message.success('操作成功')
-        this.showDialog = false
+        this.showDialog = false // 关闭弹层， 触发el-dialog的close事件
       } catch (error) {
         console.log(error)
       }
     },
     btnCancel () {
-
+      this.roleForm = {
+        name: '',
+        description: ''
+      }
+      // 移除校验
+      this.$refs.roleForm.resetFields()
+      this.showDialog = false
     }
 
   }
