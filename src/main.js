@@ -12,6 +12,8 @@ import App from './App'
 import store from './store'
 import router from './router'
 
+import Component from '@/components'
+
 // * 把所有的都拿过来
 import * as directives from '@/directives'
 
@@ -27,6 +29,8 @@ Object.keys(directives).forEach(key => {
   // 注册自定义指令
   Vue.directive(key, directives[key])
 })
+
+Vue.use(Component) // 注册自己的插件
 
 Vue.config.productionTip = false
 
