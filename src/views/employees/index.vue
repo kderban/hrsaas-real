@@ -3,9 +3,9 @@
     <div class="app-container">
       <page-tools :show-before="true">
         <!-- 左侧显示总记录数 -->
-       <template v-slot:before>
-           <span slot="before">共16条记录</span>
-       </template>
+        <template v-slot:before>
+          <span slot="before">共{{ page.total }}条记录</span>
+        </template>
         <!-- 右侧显示按钮  Excel导入 Excel导出 新增员工-->
         <template #after>
           <el-button size="small" type="warning">导入</el-button>
@@ -14,16 +14,16 @@
         </template>
       </page-tools>
       <!-- 放置表格和分页 -->
-      <el-card>
-        <el-table border>
+      <el-card v-loading="loading">
+        <el-table border :data="list" >
           <!-- sortable 可排序的 -->
-          <el-table-column label="序号" sortable="" />
-          <el-table-column label="姓名" sortable="" />
-          <el-table-column label="工号" sortable="" />
-          <el-table-column label="聘用形式" sortable="" />
-          <el-table-column label="部门" sortable="" />
-          <el-table-column label="入职时间" sortable="" />
-          <el-table-column label="账户状态" sortable="" />
+          <el-table-column type="index" label="序号" sortable="" />
+          <el-table-column label="姓名" sortable="" prop="username" />
+          <el-table-column label="工号" sortable="" prop="workNumber" />
+          <el-table-column label="聘用形式" sortable="" prop="formOfEmployment" />
+          <el-table-column label="部门" sortable="" prop="departmentName" />
+          <el-table-column label="入职时间" sortable="" prop="timeOfEntry" />
+          <el-table-column label="账户状态" sortable="" prop="enableState" />
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template>
               <el-button type="text" size="small">查看</el-button>
@@ -37,7 +37,13 @@
         </el-table>
         <!-- 分页组件 -->
         <el-row type="flex" justify="center" align="middle" style="height: 60px">
-          <el-pagination layout="prev, pager, next" />
+          <el-pagination
+          layout="prev, pager, next"
+          :current-page="page.page"
+          :page-size="page.size"
+          :total="page.total"
+          @current-change="changePage"
+          />
         </el-row>
       </el-card>
     </div>
@@ -45,8 +51,36 @@
 </template>
 
 <script>
+import { getEmployeeList } from '@/api/employees'
 export default {
+  data () {
+    return {
+      list: [], // 接收数组
+      page: {
+        page: 1,
+        size: 10,
+        total: 0 // 分页的总数
+      },
+      loading: false // 显示遮罩层
+    }
+  },
+  created () {
+    this.getEmployeeList()
+  },
+  methods: {
+    async getEmployeeList () {
+      this.loading = true
+      const { total, rows } = await getEmployeeList(this.page)
+      this.page.total = total
+      this.list = rows
+      this.loading = false
+    },
+    changePage (newPage) {
+      this.page.page = newPage // 赋值最新的页码
+      this.getEmployeeList() //  重新拉取数据
+    }
 
+  }
 }
 </script>
 
