@@ -17,6 +17,8 @@ import Component from '@/components'
 // * 把所有的都拿过来
 import * as directives from '@/directives'
 
+import * as filters from '@/filters' // 引入工具类
+
 import '@/icons' // icon
 import '@/permission' // permission control
 
@@ -28,6 +30,11 @@ Vue.use(ElementUI, { locale })
 Object.keys(directives).forEach(key => {
   // 注册自定义指令
   Vue.directive(key, directives[key])
+})
+
+Object.keys(filters).forEach(key => {
+  // 注册过滤器
+  Vue.filter(key, filters[key])
 })
 
 Vue.use(Component) // 注册自己的插件
