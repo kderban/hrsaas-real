@@ -10,12 +10,12 @@
         <template #after>
           <el-button size="small" type="warning">导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
-          <el-button size="small" type="primary">新增员工</el-button>
+          <el-button size="small" type="primary" @click="showDialog = true" >新增员工</el-button>
         </template>
       </page-tools>
       <!-- 放置表格和分页 -->
       <el-card v-loading="loading">
-        <el-table border :data="list" >
+        <el-table border :data="list">
           <!-- sortable 可排序的 -->
           <el-table-column type="index" label="序号" sortable="" />
           <el-table-column label="姓名" sortable="" prop="username" />
@@ -26,11 +26,11 @@
           <el-table-column label="入职时间" sortable="" prop="timeOfEntry">
             <template v-slot="{ row }">
               <!-- 将时间进行格式化 -->
-               {{ row.timeOfEntry | formatDate }}
+              {{ row.timeOfEntry | formatDate }}
             </template>
           </el-table-column>
-          <el-table-column label="账户状态" sortable="" prop="enableState" >
-             <template v-slot="{ row }">
+          <el-table-column label="账户状态" sortable="" prop="enableState">
+            <template v-slot="{ row }">
               <!-- 根据当前状态来确定 是否打开开关 -->
               <el-switch :value="row.enableState === 1" />
             </template>
@@ -42,22 +42,25 @@
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
               <el-button type="text" size="small">角色</el-button>
-              <el-button type="text" size="small" @click="deleteEmployee(row.id)" >删除</el-button>
+              <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
         <!-- 分页组件 -->
         <el-row type="flex" justify="center" align="middle" style="height: 60px">
           <el-pagination
-          layout="prev, pager, next"
-          :current-page="page.page"
-          :page-size="page.size"
-          :total="page.total"
-          @current-change="changePage"
+            layout="prev, pager, next"
+            :current-page="page.page"
+            :page-size="page.size"
+            :total="page.total"
+            @current-change="changePage"
           />
         </el-row>
       </el-card>
     </div>
+    <!-- 放置新增组件 -->
+    <!-- sync修饰符作用到属性的后方，子组件去改变父组件数据的语法糖 -->
+    <add-employee :show-dialog.sync="showDialog" />
   </div>
 </template>
 
@@ -67,7 +70,12 @@ import { getEmployeeList, delEmployee } from '@/api/employees'
 // 引入员工的枚举对象
 import EmployeeEnum from '@/api/constant/employees'
 
+import AddEmployee from './components/add-employee'
+
 export default {
+  components: {
+    AddEmployee
+  },
   data () {
     return {
       list: [], // 接收数组
@@ -76,7 +84,8 @@ export default {
         size: 10,
         total: 0 // 分页的总数
       },
-      loading: false // 显示遮罩层
+      loading: false, // 显示遮罩层
+      showDialog: false // 默认是关闭的
     }
   },
   created () {
