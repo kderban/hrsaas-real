@@ -8,7 +8,7 @@
         </template>
         <!-- 右侧显示按钮  Excel导入 Excel导出 新增员工-->
         <template #after>
-          <el-button size="small" type="warning">导入</el-button>
+          <el-button size="small" type="warning" @click="$router.push('/import')" >导入</el-button>
           <el-button size="small" type="danger">导出</el-button>
           <el-button size="small" type="primary" @click="showDialog = true" >新增员工</el-button>
         </template>
