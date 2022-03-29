@@ -8,9 +8,10 @@ import { importEmployee } from '@/api/employees'
 
 export default {
   // 组件状态值
+  // 为了让这个页面可以服务更多的导入功能，我们可以在页面中用参数来判断，是否是导入员工
   data () {
     return {
-
+      type: this.$route.query.type
     }
   },
   // 组件方法
