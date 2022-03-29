@@ -86,11 +86,7 @@
             width="280"
           >
             <template v-slot="{ row }">
-              <el-button
-                type="text"
-                size="small"
-                @click="$router.push(`/employees/detail/${row.id}`)"
-              >查看</el-button>
+        <el-button type="text" size="small" @click="$router.push(`/employees/detail/${row.id}`)" >查看</el-button>
               <el-button
                 type="text"
                 size="small"

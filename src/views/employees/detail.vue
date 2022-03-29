@@ -17,8 +17,15 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情" />
-          <el-tab-pane label="岗位信息" />
+          <el-tab-pane label="个人详情" >
+             <!-- 放置个人详情 -->
+             <!-- component可以是任何组件,动态组件可以切换，is必须是变量 -->
+           <component :is="UserComponent" />
+          </el-tab-pane>
+          <el-tab-pane label="岗位信息" >
+             <!-- 放置岗位详情 -->
+             <component :is="JobComponent" />
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>
@@ -30,10 +37,20 @@ import { getUserDetailById } from '@/api/user'
 
 import { saveUserDetailById } from '@/api/employees'
 
+import UserInfo from './components/user-info'
+
+import JobInfo from './components/job-info'
+
 export default {
+  components: {
+    UserInfo,
+    JobInfo
+  },
   // 组件状态值
   data () {
     return {
+      UserComponent: 'user-info',
+      JobComponent: 'job-info',
       userId: this.$route.params.id, // 这样可以直接将路由中的参数赋值给data中的属性
       userInfo: {
         // 专门存放基本信息
@@ -41,9 +58,8 @@ export default {
         password2: ''
       },
       rules: {
-        username: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
-        password2: [{ required: true, message: '密码不能为空', trigger: 'blur' },
-          { min: 6, max: 9, message: '密码长度6-9位', trigger: 'blur' }]
+        username: [{ required: true, message: '姓名不能为空', trigger: 'blur' }, { min: 1, max: 6, message: '姓名长度为1-4位', trigger: 'blur' }],
+        password2: [{ required: true, message: '密码不能为空', trigger: 'blur' }, { min: 6, max: 16, message: '密码长度为6-16位', trigger: 'blur' }]
       }
     }
   },
