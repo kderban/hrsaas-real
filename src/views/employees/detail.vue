@@ -5,26 +5,48 @@
         <el-tabs>
           <el-tab-pane label="登录账户设置">
             <!-- 放置表单 -->
-            <el-form ref="userForm" :model="userInfo" :rules="rules" label-width="120px" style="margin-left: 120px; margin-top:30px">
-              <el-form-item label="姓名:" prop="username">
-                <el-input style="width:300px"  v-model="userInfo.username" />
+            <el-form
+              ref="userForm"
+              :model="userInfo"
+              :rules="rules"
+              label-width="120px"
+              style="margin-left: 120px; margin-top:30px"
+            >
+              <el-form-item
+                label="姓名:"
+                prop="username"
+              >
+                <el-input
+                  style="width:300px"
+                  v-model="userInfo.username"
+                />
               </el-form-item>
-              <el-form-item label="密码:" prop="password2">
-                <el-input style="width:300px" type="password" v-model="userInfo.password2" />
+              <el-form-item
+                label="密码:"
+                prop="password2"
+              >
+                <el-input
+                  style="width:300px"
+                  type="password"
+                  v-model="userInfo.password2"
+                />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="saveUser" >更新</el-button>
+                <el-button
+                  type="primary"
+                  @click="saveUser"
+                >更新</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane label="个人详情" >
-             <!-- 放置个人详情 -->
-             <!-- component可以是任何组件,动态组件可以切换，is必须是变量 -->
-           <component :is="UserComponent" />
+          <el-tab-pane label="个人详情">
+            <!-- 放置个人详情 -->
+            <!-- component可以是任何组件,动态组件可以切换，is必须是变量 -->
+            <component :is="UserComponent" />
           </el-tab-pane>
-          <el-tab-pane label="岗位信息" >
-             <!-- 放置岗位详情 -->
-             <component :is="JobComponent" />
+          <el-tab-pane label="岗位信息">
+            <!-- 放置岗位详情 -->
+            <component :is="JobComponent" />
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -58,7 +80,7 @@ export default {
         password2: ''
       },
       rules: {
-        username: [{ required: true, message: '姓名不能为空', trigger: 'blur' }, { min: 1, max: 6, message: '姓名长度为1-4位', trigger: 'blur' }],
+        username: [{ required: true, message: '姓名不能为空', trigger: 'blur' }],
         password2: [{ required: true, message: '密码不能为空', trigger: 'blur' }, { min: 6, max: 16, message: '密码长度为6-16位', trigger: 'blur' }]
       }
     }
@@ -84,8 +106,8 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped lang="less">
-
 </style>

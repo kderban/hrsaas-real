@@ -15,7 +15,7 @@
               v-model="userInfo.timeOfEntry"
               type="date"
               class="inputW"
-              value-format="YYYY-MM-DD"
+              value-format="yyyy-MM-dd"
             />
           </el-form-item>
         </el-col>
@@ -37,7 +37,7 @@
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="手机">
-            <el-input v-model="userInfo.mobile" />
+            <el-input v-model="userInfo.mobile" disabled />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -282,6 +282,10 @@
 
 import EmployeeEnum from '@/api/constant/employees'
 
+import { getUserDetailById } from '@/api/user'
+
+import { getPersonalDetail, updatePersonal, saveUserDetailById } from '@/api/employees'
+
 export default {
   data () {
     return {
@@ -351,6 +355,27 @@ export default {
         proofOfDepartureOfFormerCompany: '', // 前公司离职证明
         remarks: '' // 备注
       }
+    }
+  },
+  created () {
+    this.getUserDetailById()
+    this.getPersonalDetail()
+  },
+  methods: {
+    async getUserDetailById () {
+      this.userInfo = await getUserDetailById(this.userId)
+    },
+    async saveUser () {
+    //  调用父组件
+      await saveUserDetailById(this.userInfo)
+      this.$message.success('保存用户基本信息成功')
+    },
+    async getPersonalDetail () {
+      this.formData = await getPersonalDetail(this.userId) // 获取员工数据
+    },
+    async savePersonal () {
+      await updatePersonal(this.formData)
+      this.$message.success('保存用户基础信息成功')
     }
   }
 }

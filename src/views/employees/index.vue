@@ -79,38 +79,17 @@
               <el-switch :value="row.enableState === 1" />
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            sortable=""
-            fixed="right"
-            width="280"
-          >
-            <template v-slot="{ row }">
+        <el-table-column label="操作" sortable="" fixed="right" width="280">
+        <template v-slot="{ row }">
         <el-button type="text" size="small" @click="$router.push(`/employees/detail/${row.id}`)" >查看</el-button>
-              <el-button
-                type="text"
-                size="small"
-              >转正</el-button>
-              <el-button
-                type="text"
-                size="small"
-              >调岗</el-button>
-              <el-button
-                type="text"
-                size="small"
-              >离职</el-button>
-              <el-button
-                type="text"
-                size="small"
-              >角色</el-button>
-              <el-button
-                type="text"
-                size="small"
-                @click="deleteEmployee(row.id)"
-              >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-button type="text" size="small" >转正</el-button>
+        <el-button type="text" size="small">调岗</el-button>
+        <el-button type="text" size="small" >离职</el-button>
+        <el-button type="text" size="small">角色</el-button>
+        <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
+        </template>
+     </el-table-column>
+  </el-table>
         <!-- 分页组件 -->
         <el-row
           type="flex"

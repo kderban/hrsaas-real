@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
 
 import { getTime } from '@/utils/auth'
 
-const TimeOut = 3600 // 定义超时时间
+const TimeOut = 36000 // 定义超时时间
 
 // 创建实例
 const service = axios.create({
