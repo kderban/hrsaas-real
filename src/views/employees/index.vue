@@ -42,6 +42,12 @@
             sortable=""
             prop="username"
           />
+          <el-table-column label="头像" align="center" >
+          <!-- 作用域插槽 -->
+          <template v-slot="{ row }" >
+            <img slot="reference" :src="row.staffPhoto" style="border-radius: 50%; width: 100px; height: 100px; padding: 10px" v-imagerror="require('@/assets/common/bigUserHeader.png')" alt="" />
+          </template>
+          </el-table-column>
           <el-table-column
             label="工号"
             sortable=""
