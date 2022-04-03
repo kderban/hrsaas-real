@@ -7,12 +7,7 @@
           <el-tab-pane label="角色管理">
             <!-- 新增角色按钮 -->
             <el-row style="height:60px">
-              <el-button
-                icon="el-icon-plus"
-                size="small"
-                type="primary"
-                @click="showDialog = true"
-              >新增角色</el-button>
+              <el-button icon="el-icon-plus" size="small" type="primary" @click="showDialog = true" >新增角色</el-button>
             </el-row>
             <!-- 给表格绑定数据 -->
             <el-table
@@ -41,40 +36,17 @@
                 label="操作"
               >
                 <!-- 作用域插槽 -->
-                <template slot-scope="{ row }">
-                  <el-button
-                    size="small"
-                    type="success"
-                  >分配权限</el-button>
-                  <el-button
-                    size="small"
-                    type="primary"
-                    @click="editRole(row.id)"
-                  >编辑</el-button>
-                  <el-button
-                    size="small"
-                    type="danger"
-                    @click="deleteRole(row.id)"
-                  >删除</el-button>
-                </template>
+            <template slot-scope="{ row }">
+             <el-button size="small" type="success" @click="assignPerm(row.id)" >分配权限</el-button>
+             <el-button size="small" type="primary" @click="editRole(row.id)" >编辑</el-button>
+             <el-button size="small" type="danger" @click="deleteRole(row.id)">删除</el-button>
+            </template>
 
               </el-table-column>
             </el-table>
-            <!-- 分页组件 -->
-            <el-row
-              type="flex"
-              justify="center"
-              align="middle"
-              style="height: 60px"
-            >
+            <el-row type="flex" justify="center" align="middle" style="height: 60px" >
               <!-- 分页组件 -->
-              <el-pagination
-                :current-page="page.page"
-                :page-size="page.pagesize"
-                :total="page.total"
-                layout="prev,pager,next"
-                @current-change="changePage"
-              />
+               <el-pagination :current-page="page.page" :page-size="page.pagesize" :total="page.total" layout="prev,pager,next" @current-change="changePage" />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="公司信息">
@@ -160,15 +132,32 @@
         justify="center"
       >
         <el-col :span="8">
-          <el-button
-            size="small"
-            @click="btnCancel"
-          >取消</el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="btnOK"
-          >确定</el-button>
+          <el-button size="small" @click="btnCancel" >取消</el-button>
+          <el-button type="primary" size="small" @click="btnOK" >确定</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 放置一个弹层 -->
+    <el-dialog title="分配权限" :visible="showPermDialog" @click="btnPermCancel">
+      <!-- 权限是一棵树 -->
+      <!-- 将数据绑定到组件上 -->
+      <!-- :check-strictly="true" 表示勾选时 父子互相不关联 -->
+       <!-- id作为唯一标识 -->
+      <el-tree
+      ref="permTree"
+      :data="permData"
+      :props="defaultProps"
+      :default-expand-all="true"
+      :show-checkbox="true"
+      :check-strictly="true"
+      :default-checked-keys="selectCheck"
+      node-key="id"
+      />
+      <!-- 确定取消 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button type="primary" size="small" @click="btnPermOK">确定</el-button>
+          <el-button size="small" @click="btnPermCancel">取消</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -176,9 +165,13 @@
 </template>
 
 <script>
-import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole } from '@/api/setting'
+import { getRoleList, getCompanyInfo, deleteRole, getRoleDetail, updateRole, addRole, assignPerm } from '@/api/setting'
 
 import { mapGetters } from 'vuex'
+
+import { getPermissionList } from '@/api/permission'
+
+import { tranListToTreeData } from '@/utils'
 
 export default {
   data () {
@@ -194,13 +187,21 @@ export default {
         // 公司信息
       },
       showDialog: false, // 控制弹层的显示
+      showPermDialog: false, // 控制分配权限弹层的显示后者隐藏
       roleForm: {
         name: '',
         description: ''
       },
       rules: {
         name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }]
-      }
+      },
+      permData: [], // 专门用来接收权限数据 树形数据
+      selectCheck: [], // 定义一个数组来接收 已经选中的节点
+      defaultProps: {
+        label: 'name'
+      }, // 定义显示字段名称和子属性的字段名称
+      roleId: null // 用来记录当前分配权限的id
+
     }
   },
   computed: {
@@ -272,6 +273,26 @@ export default {
       // 移除校验
       this.$refs.roleForm.resetFields()
       this.showDialog = false
+    },
+    // 弹出层
+    async assignPerm (id) {
+      // 获取权限点数据,在点击的时候
+      this.permData = tranListToTreeData(await getPermissionList(), '0') // 转化list到树形数据
+      this.roleId = id
+      // 获取各个id所拥有的权限点
+      const { permIds } = await getRoleDetail(id) // permIds是当前角色所拥有的权限点数据
+      this.selectCheck = permIds // 将当前角色所拥有的权限id赋值
+      this.showPermDialog = true
+    },
+    async  btnPermOK () {
+      // 调用el-tree方法
+      await assignPerm({ permIds: this.$refs.permTree.getCheckedKeys(), id: this.roleId })
+      this.$message.success('分配权限成功')
+      this.showPermDialog = false
+    },
+    btnPermCancel () {
+      this.selectCheck = [] // 重置数据
+      this.showPermDialog = false
     }
 
   }
