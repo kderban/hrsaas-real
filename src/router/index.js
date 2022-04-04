@@ -72,9 +72,9 @@ export const constantRoutes = [
       path: '', // 什么都不写表示默认的二级路由
       component: () => import('@/views/import')
     }]
-  },
+  }
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  // { path: '*', redirect: '/404', hidden: true } 放到了permission.js的 router.addRoutes()里面了
 ]
 
 // 动态路由
@@ -99,9 +99,10 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+// 重置路由
 export function resetRouter () {
   const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  router.matcher = newRouter.matcher // reset router  重新设置路由的可匹配路径
 }
 
 export default router
