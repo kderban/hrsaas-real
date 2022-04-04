@@ -22,6 +22,7 @@
             size="small"
             type="primary"
             @click="showDialog = true"
+            :disabled="!checkPermission('POINT-USER-ADD')"
           >新增员工</el-button>
         </template>
       </page-tools>
