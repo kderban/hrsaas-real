@@ -31,6 +31,7 @@
             <span>工作日历</span>
           </div>
         <!-- 放置日历组件 -->
+          <work-calendar />
         </el-card>
         <!-- 公告 -->
         <el-card class="box-card">
@@ -129,6 +130,8 @@ import { mapGetters, createNamespacedHelpers } from 'vuex'
 
 const { mapState } = createNamespacedHelpers('user')
 
+import WorkCalendar from './components/work-calendar.vue'
+
 export default {
   name: 'Dashboard',
   data () {
@@ -142,6 +145,9 @@ export default {
       'staffPhoto'
     ]),
     ...mapState(['userInfo'])
+  },
+  components: {
+    WorkCalendar
   }
 }
 </script>
