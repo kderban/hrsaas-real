@@ -11,6 +11,8 @@ import salarysRouter from './modules/salarys'
 import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
 
+import userRouter from './modules/user'
+
 Vue.use(Router)
 
 /* Layout */
@@ -72,7 +74,8 @@ export const constantRoutes = [
       path: '', // 什么都不写表示默认的二级路由
       component: () => import('@/views/import')
     }]
-  }
+  },
+  userRouter // 放置都可以访问的路由
   // 404 page must be placed at the end !!!
   // { path: '*', redirect: '/404', hidden: true } 放到了permission.js的 router.addRoutes()里面了
 ]

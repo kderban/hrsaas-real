@@ -14,7 +14,7 @@ const TimeOut = 36000 // 定义超时时间
 const service = axios.create({
   // 当执行npm run dev的时候，.env.development => /api => 跨域代理
   baseURL: process.env.VUE_APP_BASE_API, // 当执行 npm run build =>  /prod-api
-  timeout: 5000 // 设置超时时间
+  timeout: 50000 // 设置超时时间
 })
 // 请求拦截器
 service.interceptors.request.use(config => {
