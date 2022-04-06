@@ -91,6 +91,7 @@
             <span>绩效指数</span>
           </div>
         <!-- 放置雷达图 -->
+        <radar />
         </el-card>
         <!-- 帮助连接 -->
         <el-card class="box-card">
@@ -132,6 +133,8 @@ const { mapState } = createNamespacedHelpers('user')
 
 import WorkCalendar from './components/work-calendar.vue'
 
+import Radar from './components/radar'
+
 export default {
   name: 'Dashboard',
   data () {
@@ -147,7 +150,8 @@ export default {
     ...mapState(['userInfo'])
   },
   components: {
-    WorkCalendar
+    WorkCalendar,
+    Radar
   }
 }
 </script>
