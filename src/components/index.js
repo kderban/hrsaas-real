@@ -9,6 +9,8 @@ import Print from 'vue-print-nb'
 
 import ScreenFull from './ScreenFull'
 
+import ThemePicker from './ThemePicker'
+
 export default {
   install (Vue) {
     //  注册全局的通用栏组件对象
@@ -17,5 +19,6 @@ export default {
     Vue.component('ImageUpload', ImageUpload) // 注册导入上传组件
     Vue.use(Print) // 注册打印组件
     Vue.component('ScreenFull', ScreenFull) // 注册全屏组件
+    Vue.component('ThemePicker', ThemePicker) // 完成组件注册
   }
 }
