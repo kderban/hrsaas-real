@@ -21,9 +21,9 @@ export default {
         text: '基础雷达图'
       },
       tooltip: {},
-      legend: {
-        data: ['预算分配(Allocated Budget)', '实际开销(Actual Spending)']
-      },
+      // legend: {
+      //   data: ['预算分配(Allocated Budget)', '实际开销(Actual Spending)']
+      // },
       radar: {
         // shape: 'circle',
         name: {
