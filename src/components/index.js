@@ -11,6 +11,8 @@ import ScreenFull from './ScreenFull'
 
 import ThemePicker from './ThemePicker'
 
+import LangSelect from './lang'
+
 export default {
   install (Vue) {
     //  注册全局的通用栏组件对象
@@ -20,5 +22,6 @@ export default {
     Vue.use(Print) // 注册打印组件
     Vue.component('ScreenFull', ScreenFull) // 注册全屏组件
     Vue.component('ThemePicker', ThemePicker) // 完成组件注册
+    Vue.component('LangSelect', LangSelect)
   }
 }
