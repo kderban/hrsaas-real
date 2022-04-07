@@ -7,6 +7,8 @@ import ImageUpload from './ImageUpload'
 
 import Print from 'vue-print-nb'
 
+import ScreenFull from './ScreenFull'
+
 export default {
   install (Vue) {
     //  注册全局的通用栏组件对象
@@ -14,5 +16,6 @@ export default {
     Vue.component('UploadExcel', UploadExcel) // 注册导入excel组件
     Vue.component('ImageUpload', ImageUpload) // 注册导入上传组件
     Vue.use(Print) // 注册打印组件
+    Vue.component('ScreenFull', ScreenFull) // 注册全屏组件
   }
 }
