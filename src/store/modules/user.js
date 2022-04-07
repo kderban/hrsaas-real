@@ -57,6 +57,9 @@ const actions = {
     // 三个参数: mutations名称，payload载荷，{}
     context.commit('permission/setRoutes', [], { root: true })
     // 子模块调用子模块的action 可以 将 commit的第三个参数 设置成  { root: true } 就表示当前的context不是子模块了 而是父模块
+
+    // 重置多页签
+    context.dispatch('tagsView/delAllViews', null, { root: true })
   }
 }
 
